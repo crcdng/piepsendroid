@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory android:title="@string/prefs_audio">
+        <EditTextPreference 
+            android:key="prefs_frequency"
+            android:title="@string/prefs_audio_frequency"
+            android:summary="@string/prefs_audio_frequency_summary"
+            android:defaultValue="@string/prefs_audio_frequency_default"         
+             />
+    </PreferenceCategory>
+</PreferenceScreen>

@@ -2,13 +2,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-
+    
     <TextView
+        android:id="@+id/pitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:text="@string/hello_world"
+        android:text="@string/dummy"
         tools:context=".PiepsenDroidActivity" />
+
+    <Button
+        android:id="@+id/pieps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pitch"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="54dp"
+        android:text="@string/trigger" />
 
 </RelativeLayout>
