@@ -5,7 +5,8 @@ import android.preference.PreferenceActivity;
 
 public class SettingsActivity extends PreferenceActivity {
 
-	public static final String PREF_KEY_FREQUENCY = "prefs_frequency";
+	public static final String PREFS_AUDIO_FREQUENCY = "prefs_audio_frequency";
+	public static final String PREFS_UI_DIAGNOSTIC = "prefs_ui_diagnostic";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

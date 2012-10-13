@@ -6,12 +6,21 @@
     <string name="title_activity_piepsen_droid">piepsendroid</string>
     <string name="about">piepsendroid by android@i3games.com</string>
     <string name="menu_about">About</string>
+ 
     <string name="prefs_audio">Audio</string>
-    <string name="prefs_audio_frequency">Start Frequency</string>
-    <string name="prefs_audio_frequency_summary">The frequency in Hertz we will start with.</string>
+    <string name="prefs_audio_frequency">Initial Frequency</string>
+    <string name="prefs_audio_frequency_summary">The initial frequency in Hertz.</string>
+    <string name="prefs_audio_frequency_default">440</string>
+  
+    <string name="prefs_ui">UI</string>
+    <string name="prefs_ui_diagnostic">Diagnostic</string>
+    <string name="prefs_ui_diagnostic_summary">Show the diagnotic interface?</string>
+  
     <string name="dummy">---</string>
     <string name="shutdown">FATAL: Cannot connect to the audio layer. Shutting down.</string>
     <string name="trigger">Pieps!</string>
-    <string name="prefs_audio_frequency_default">440</string>
+    <string name="frequency">Frequency</string>
+    <string name="amplitude">Amplitude</string>
+    <string name="attack">Attack</string>
 
 </resources>

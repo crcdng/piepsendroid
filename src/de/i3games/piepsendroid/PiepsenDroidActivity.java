@@ -35,11 +35,14 @@ public class PiepsenDroidActivity extends Activity {
 	
 	private TextView mTvReceivePitch;
 	private Button mBtnPieps;
+	private View mLyDiagnostic;
 
 	private PdDispatcher mPdDispatcher;
 	private PdService mPdService = null;
 	
 	private float mFrequency;
+	private float mAmplitude;
+	private int mAttack = 0;
 	
 	private final ServiceConnection mPdConnection = new ServiceConnection() {
 
@@ -67,6 +70,29 @@ public class PiepsenDroidActivity extends Activity {
 					
 				});	
 				
+				mPdDispatcher.addListener("amplitude", new PdListener.Adapter() {
+					
+					private float mAmplitude;
+
+					public void receiveFloat(String source, float value) {
+						Log.d(TAG, "amplitude: " + value);
+						mAmplitude = value;
+						mTvReceiveAmplitude.setText(String.valueOf((int)value));
+					}
+					
+				});
+				
+				mPdDispatcher.addListener("attack", new PdListener.Adapter() {
+					
+					public void receiveBang(String source) {
+						Log.d(TAG, "attack!: ");
+						mAttack = mAttack + 1;
+						mTvReceiveAttack.setText(String.valueOf(mAttack));
+					}
+					
+				});
+				
+				
 				PdBase.setReceiver(mPdDispatcher);
 				
 				// access the zipped patch stored in /res/raw
@@ -93,6 +119,8 @@ public class PiepsenDroidActivity extends Activity {
 			
 		}
 	};
+	private TextView mTvReceiveAmplitude;
+	private TextView mTvReceiveAttack;
 	
 	// android life cycle and menu
 	@Override
@@ -100,7 +128,11 @@ public class PiepsenDroidActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		
+		
+		mLyDiagnostic = findViewById(R.id.layout_diagnostic);
 		mTvReceivePitch = (TextView) findViewById(R.id.pitch);
+		mTvReceiveAmplitude = (TextView) findViewById(R.id.amplitude);
+		mTvReceiveAttack = (TextView) findViewById(R.id.attack);
 		mBtnPieps = (Button) findViewById(R.id.pieps);
 		mBtnPieps.setOnClickListener(new OnClickListener() {			
 
@@ -119,14 +151,24 @@ public class PiepsenDroidActivity extends Activity {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
 		try {
-			mFrequency = Float.parseFloat(sharedPref.getString(SettingsActivity.PREF_KEY_FREQUENCY, ""));
+			mFrequency = Float.parseFloat(sharedPref.getString(SettingsActivity.PREFS_AUDIO_FREQUENCY, ""));
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			Log.d(TAG, "Error in Setting frequency: " + e.getMessage());
 			mFrequency = DEFAULT_FREQUENCY;
 		}
-		
+
+		displayDiagnosticUI(sharedPref.getBoolean(SettingsActivity.PREFS_UI_DIAGNOSTIC, false));
+	
 		super.onResume();
+	}
+
+	private void displayDiagnosticUI(boolean on) {
+		if (on) {
+		mLyDiagnostic.setVisibility(View.VISIBLE);
+		} else {
+		mLyDiagnostic.setVisibility(View.INVISIBLE);
+		}
 	}
 
 	@Override

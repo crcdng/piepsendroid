@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-    <PreferenceCategory android:title="@string/prefs_audio">
-        <EditTextPreference 
-            android:key="prefs_frequency"
-            android:title="@string/prefs_audio_frequency"
-            android:summary="@string/prefs_audio_frequency_summary"
-            android:defaultValue="@string/prefs_audio_frequency_default"         
-             />
+
+    <PreferenceCategory android:title="@string/prefs_ui" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="prefs_ui_diagnostic"
+            android:summary="@string/prefs_ui_diagnostic_summary"
+            android:title="@string/prefs_ui_diagnostic" />
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/prefs_audio" >
+        <EditTextPreference
+            android:defaultValue="@string/prefs_audio_frequency_default"
+            android:key="prefs_audio_frequency"
+            android:summary="@string/prefs_audio_frequency_summary"
+            android:title="@string/prefs_audio_frequency" />
+    </PreferenceCategory>
+
 </PreferenceScreen>
