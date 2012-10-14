@@ -29,5 +29,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 THE POSSIBILITY OF SUCH DAMAGE.
 
-libpd and pd for android are covered by a similiar license 
-see pd-for-android/PdCore/LICENSE.txt 
+libpd, pd for android and pure data are covered by similar licenses, 
+please see pd-for-android/PdCore/LICENSE.txt and puredata.info.
+
+The app logo is a letter from Wingdings.
