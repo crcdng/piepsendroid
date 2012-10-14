@@ -19,6 +19,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,6 +27,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,16 +47,23 @@ public class PiepsenDroidActivity extends Activity {
 	private TextView mTvReceivePitchDeviation;
 	private Button mBtnPieps;
 	private View mLyDiagnostic;
-	
+	private View mLyMain;
+
 	private PdDispatcher mPdDispatcher;
 	private PdService mPdService = null;
 
 	private float mStartFrequency;
 	private int mAttack = 0;
+	private boolean mStopServiceOnExit = false;
 	private int mAmplitudesSize = DEFAULT_MEMORY_SIZE;
 	private int mFrequenciesSize = DEFAULT_MEMORY_SIZE;
-	private Memory mAmplitudes  = new Memory(mAmplitudesSize);
+	private Memory mAmplitudes = new Memory(mAmplitudesSize);
 	private Memory mFrequencies = new Memory(mFrequenciesSize);;
+
+	private float mMinFrequency;
+	private float mMaxFrequency;
+	private float mMinAmplitude;
+	private float mMaxAmplitude;
 
 	private final ServiceConnection mPdConnection = new ServiceConnection() {
 
@@ -70,9 +79,10 @@ public class PiepsenDroidActivity extends Activity {
 				mPdService.initAudio(sampleRate, 1, 2, 10.0f);
 				mPdService.startAudio();
 
-				// register handlers for frequency, amplitude and attack to receive messages from the patch
+				// register handlers for frequency, amplitude and attack to
+				// receive messages from the patch
 				mPdDispatcher = new PdUiDispatcher();
-				
+
 				mPdDispatcher.addListener("pitch", new PdListener.Adapter() {
 
 					public void receiveFloat(String source, float value) {
@@ -80,10 +90,11 @@ public class PiepsenDroidActivity extends Activity {
 						addFrequency(value);
 						mTvReceivePitch.setText(String.valueOf((int) value));
 						mTvReceivePitchCentral.setText(String
-						.valueOf((int) getFrequencyCentral()));
+								.valueOf((int) getFrequencyCentral()));
 						mTvReceivePitchDeviation.setText(String
 								.valueOf((int) getFrequencyDeviation()));
-						
+
+						setSoundColor(getFrequencyCentral(), getAmplitudeCentral());
 					}
 
 				});
@@ -94,14 +105,14 @@ public class PiepsenDroidActivity extends Activity {
 							public void receiveFloat(String source, float value) {
 								Log.d(TAG, "amplitude: " + value);
 								addAmplitude(value);
-								
+
 								mTvReceiveAmplitude.setText(String
 										.valueOf((int) value));
 								mTvReceiveAmplitudeCentral.setText(String
-								.valueOf((int) getAmplitudeCentral()));
+										.valueOf((int) getAmplitudeCentral()));
 								mTvReceiveAmplitudeDeviation.setText(String
 										.valueOf((int) getAmplitudeDeviation()));
-								
+
 							}
 
 						});
@@ -151,10 +162,13 @@ public class PiepsenDroidActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		getWindow().addFlags(LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 		setContentView(R.layout.main);
 
 		mLyDiagnostic = findViewById(R.id.layout_diagnostic);
+		mLyMain = findViewById(R.id.layout_main);
+		
 		mTvReceivePitch = (TextView) findViewById(R.id.pitch);
 		mTvReceivePitchCentral = (TextView) findViewById(R.id.pitchCentralValue);
 		mTvReceivePitchDeviation = (TextView) findViewById(R.id.pitchDeviationValue);
@@ -162,8 +176,7 @@ public class PiepsenDroidActivity extends Activity {
 		mTvReceiveAmplitudeCentral = (TextView) findViewById(R.id.amplitudeCentralValue);
 		mTvReceiveAmplitudeDeviation = (TextView) findViewById(R.id.amplitudeDeviationValue);
 		mTvReceiveAttack = (TextView) findViewById(R.id.attack);
-		
-		
+
 		mBtnPieps = (Button) findViewById(R.id.pieps);
 		mBtnPieps.setOnClickListener(new OnClickListener() {
 
@@ -186,6 +199,17 @@ public class PiepsenDroidActivity extends Activity {
 		try {
 			mStartFrequency = Float.parseFloat(sharedPref.getString(
 					SettingsActivity.PREFS_AUDIO_FREQUENCY, ""));
+			
+			mMinFrequency = Float.parseFloat(sharedPref.getString(
+					SettingsActivity.PREFS_AUDIO_FREQUENCY_MIN, ""));
+			mMaxFrequency = Float.parseFloat(sharedPref.getString(
+					SettingsActivity.PREFS_AUDIO_FREQUENCY_MAX, ""));
+			mMinAmplitude = Float.parseFloat(sharedPref.getString(
+					SettingsActivity.PREFS_AUDIO_AMPLITUDE_MIN, ""));
+			mMaxAmplitude = Float.parseFloat(sharedPref.getString(
+					SettingsActivity.PREFS_AUDIO_AMPLITUDE_MAX, ""));
+			
+			
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			Log.d(TAG, "Error in Setting frequency: " + e.getMessage());
@@ -194,6 +218,9 @@ public class PiepsenDroidActivity extends Activity {
 
 		displayDiagnosticUI(sharedPref.getBoolean(
 				SettingsActivity.PREFS_UI_DIAGNOSTIC, false));
+
+		mStopServiceOnExit = sharedPref.getBoolean(
+				SettingsActivity.PREFS_GENERAL_STOPSERVICEONEXIT, false);
 
 		super.onResume();
 	}
@@ -212,8 +239,18 @@ public class PiepsenDroidActivity extends Activity {
 	}
 
 	@Override
+	protected void onStop() {
+		if (mStopServiceOnExit) {
+			unbindService(mPdConnection);
+		}
+		super.onStop();
+	}
+
+	@Override
 	protected void onDestroy() {
-		unbindService(mPdConnection);
+		if (!mStopServiceOnExit) {
+		unbindService(mPdConnection);  // TODO unbindService is not reentrant :( Service.isRunning() ?
+		}
 		super.onDestroy();
 	}
 
@@ -254,21 +291,34 @@ public class PiepsenDroidActivity extends Activity {
 	private void addAmplitude(float value) {
 		mAmplitudes.add(value);
 	}
-	
-	private float getAmplitudeCentral(){
+
+	private float getAmplitudeCentral() {
 		return mAmplitudes.getAverage();
 	}
-	
-	private float getAmplitudeDeviation(){
+
+	private float getAmplitudeDeviation() {
 		return mAmplitudes.getVariance();
 	}
-	
-	private float getFrequencyCentral(){
+
+	private float getFrequencyCentral() {
 		return mFrequencies.getAverage();
 	}
-	
-	private float getFrequencyDeviation(){
+
+	private float getFrequencyDeviation() {
 		return mFrequencies.getVariance();
 	}
 
+	private void setSoundColor(float frequency, float amplitude) {
+		
+		// hue, saturation, brightness
+		float hsv[] = {frequency * 360.0f / (mMaxFrequency- mMinFrequency),
+				amplitude * 1.0f / (mMaxAmplitude - mMinAmplitude), 
+				amplitude * 1.0f / (mMaxAmplitude - mMinAmplitude) };
+			
+		mLyMain.setBackgroundColor( Color.HSVToColor(hsv)); // packed int, e.g.  0x88ff0000
+
+	}
+	
+	
+	
 }
