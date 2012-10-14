@@ -48,6 +48,8 @@ public class PiepsenDroidActivity extends Activity {
 	private TextView mTvReceiveAmplitudeDeviation;
 	private TextView mTvReceivePitchDeviation;
 	private Button mBtnPieps;
+	private Button mBtnStartAutoMode;
+	private Button mBtnStopAutoMode;
 	private View mLyDiagnostic;
 	private View mLyMain;
 
@@ -174,8 +176,6 @@ public class PiepsenDroidActivity extends Activity {
 
 		}
 	};
-	private Button mBtnStartAutoMode;
-	private Button mBtnStopAutoMode;
 
 	// android life cycle and menu
 	@Override
