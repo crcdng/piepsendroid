@@ -4,10 +4,10 @@
     <PreferenceCategory android:title="@string/prefs_general" >
         <CheckBoxPreference
             android:defaultValue="false"
+            android:enabled="false"
             android:key="prefs_general_stopserviceonexit"
             android:summary="@string/prefs_general_stopserviceonexit_summary"
-            android:title="@string/prefs_general_stopserviceonexit"
-            android:enabled="false" />
+            android:title="@string/prefs_general_stopserviceonexit" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/prefs_ui" >
         <CheckBoxPreference
@@ -21,27 +21,45 @@
             android:defaultValue="@string/prefs_audio_frequency_default"
             android:key="prefs_audio_frequency"
             android:summary="@string/prefs_audio_frequency_summary"
-            android:title="@string/prefs_audio_frequency" />      
-              <EditTextPreference
+            android:title="@string/prefs_audio_frequency" />
+        <EditTextPreference
             android:defaultValue="@string/prefs_audio_frequency_min_default"
             android:key="prefs_audio_frequency_min"
             android:summary="@string/prefs_audio_frequency_min_summary"
             android:title="@string/prefs_audio_frequency_min" />
-              <EditTextPreference
+        <EditTextPreference
             android:defaultValue="@string/prefs_audio_frequency_max_default"
             android:key="prefs_audio_frequency_max"
             android:summary="@string/prefs_audio_frequency_max_summary"
             android:title="@string/prefs_audio_frequency_max" />
-              <EditTextPreference
+        <EditTextPreference
             android:defaultValue="@string/prefs_audio_amplitude_min_default"
             android:key="prefs_audio_amplitude_min"
             android:summary="@string/prefs_audio_amplitude_min_summary"
             android:title="@string/prefs_audio_amplitude_min" />
-              <EditTextPreference
+        <EditTextPreference
             android:defaultValue="@string/prefs_audio_amplitude_max_default"
             android:key="prefs_audio_amplitude_max"
             android:summary="@string/prefs_audio_amplitude_max"
             android:title="@string/prefs_audio_amplitude_max_summary" />
-        </PreferenceCategory>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/prefs_automode" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="prefs_automode_startinautomode"
+            android:summary="@string/prefs_automode_startinautomode_summary"
+            android:title="@string/prefs_automode_startinautomode" />
+        <EditTextPreference
+            android:defaultValue="@string/prefs_automode_mindelay_default"
+            android:key="prefs_automode_mindelay"
+            android:summary="@string/prefs_automode_mindelay_summary"
+            android:title="@string/prefs_automode_mindelay" />
+        <EditTextPreference
+            android:defaultValue="@string/prefs_automode_maxadd_default"
+            android:key="prefs_audio_automode_maxadd"
+            android:summary="@string/prefs_automode_maxadd_summary"
+            android:title="@string/prefs_automode_maxadd" />
+        
+    </PreferenceCategory>
 
 </PreferenceScreen>

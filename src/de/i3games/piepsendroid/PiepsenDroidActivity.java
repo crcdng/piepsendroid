@@ -2,6 +2,7 @@ package de.i3games.piepsendroid;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 
 import org.puredata.android.io.AudioParameters;
 import org.puredata.android.service.PdService;
@@ -12,6 +13,7 @@ import org.puredata.core.utils.IoUtils;
 import org.puredata.core.utils.PdDispatcher;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.app.Activity;
@@ -52,7 +54,7 @@ public class PiepsenDroidActivity extends Activity {
 	private PdDispatcher mPdDispatcher;
 	private PdService mPdService = null;
 
-	private float mStartFrequency;
+	private float mDefaultFrequency;
 	private int mAttack = 0;
 	private boolean mStopServiceOnExit = false;
 	private int mAmplitudesSize = DEFAULT_MEMORY_SIZE;
@@ -65,6 +67,25 @@ public class PiepsenDroidActivity extends Activity {
 	private float mMinAmplitude;
 	private float mMaxAmplitude;
 
+	private Random mRand = new Random();
+	private Handler mHandler = new Handler();
+
+	private int mMinDelay;
+	private int mMaxDelayAddend;
+
+	private Runnable mDecide = new Runnable() {
+
+		public void run() {
+
+			if (triggerP()) {
+			triggerPieps(nextEventFrequency());
+			}
+			
+			mHandler.postDelayed(this, nextEventDelay());
+		}
+		
+	};
+	
 	private final ServiceConnection mPdConnection = new ServiceConnection() {
 
 		public void onServiceConnected(ComponentName name, IBinder service) {
@@ -153,6 +174,8 @@ public class PiepsenDroidActivity extends Activity {
 
 		}
 	};
+	private Button mBtnStartAutoMode;
+	private Button mBtnStopAutoMode;
 
 	// android life cycle and menu
 	@Override
@@ -186,6 +209,23 @@ public class PiepsenDroidActivity extends Activity {
 			}
 		});
 
+		mBtnStartAutoMode = (Button) findViewById(R.id.start_automode);
+		mBtnStartAutoMode.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				startEvents();
+				
+			}
+		});
+		mBtnStopAutoMode = (Button) findViewById(R.id.stop_automode);
+		mBtnStopAutoMode.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				stopEvents();
+				
+			}
+		});
+		
 		bindService(new Intent(this, PdService.class), mPdConnection,
 				BIND_AUTO_CREATE);
 
@@ -197,7 +237,7 @@ public class PiepsenDroidActivity extends Activity {
 				.getDefaultSharedPreferences(this);
 
 		try {
-			mStartFrequency = Float.parseFloat(sharedPref.getString(
+			mDefaultFrequency = Float.parseFloat(sharedPref.getString(
 					SettingsActivity.PREFS_AUDIO_FREQUENCY, ""));
 			
 			mMinFrequency = Float.parseFloat(sharedPref.getString(
@@ -208,12 +248,15 @@ public class PiepsenDroidActivity extends Activity {
 					SettingsActivity.PREFS_AUDIO_AMPLITUDE_MIN, ""));
 			mMaxAmplitude = Float.parseFloat(sharedPref.getString(
 					SettingsActivity.PREFS_AUDIO_AMPLITUDE_MAX, ""));
+			mMinDelay = Integer.parseInt(sharedPref.getString(
+					SettingsActivity.PREFS_AUTOMODE_MINDELAY, "3000"));
+			mMaxDelayAddend = Integer.parseInt(sharedPref.getString(
+					SettingsActivity.PREFS_AUTOMODE_MAXADD, "5000"));
 			
 			
 		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
 			Log.d(TAG, "Error in Setting frequency: " + e.getMessage());
-			mStartFrequency = DEFAULT_FREQUENCY;
+			mDefaultFrequency = DEFAULT_FREQUENCY;
 		}
 
 		displayDiagnosticUI(sharedPref.getBoolean(
@@ -221,6 +264,11 @@ public class PiepsenDroidActivity extends Activity {
 
 		mStopServiceOnExit = sharedPref.getBoolean(
 				SettingsActivity.PREFS_GENERAL_STOPSERVICEONEXIT, false);
+		
+		if (sharedPref.getBoolean(
+				SettingsActivity.PREFS_AUTOMODE_START, false)) {
+			startEvents();
+		} 
 
 		super.onResume();
 	}
@@ -235,6 +283,7 @@ public class PiepsenDroidActivity extends Activity {
 
 	@Override
 	protected void onPause() {
+		stopEvents();
 		super.onPause();
 	}
 
@@ -319,6 +368,27 @@ public class PiepsenDroidActivity extends Activity {
 
 	}
 	
+	// decide if to piep
+	private boolean triggerP() {
+		return true;
+	}
+	private long nextEventDelay() { // ms
+		long delay = (long) (mRand.nextInt(mMaxDelayAddend) + mMinDelay);
+		Log.d(TAG, "Next Delay :" + delay);
+		return delay;
+		
+	}
+
+	private float nextEventFrequency() { // hertz
+		return mDefaultFrequency;
+	}	
 	
+	private void stopEvents() {
+		mHandler.removeCallbacks(mDecide);
+	}
+
+	private void startEvents() {
+		mHandler.postDelayed(mDecide, nextEventDelay());
+	}
 	
 }

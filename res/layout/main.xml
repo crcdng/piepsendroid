@@ -120,6 +120,25 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="54dp"
             android:text="@string/trigger" />
+
+        <Button
+            android:id="@+id/start_automode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/pieps"
+            android:layout_alignBottom="@+id/pieps"
+            android:layout_alignParentLeft="true"
+            android:text="@string/start_automode" />
+
+        <Button
+            android:id="@+id/stop_automode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/pieps"
+            android:layout_alignBottom="@+id/pieps"
+            android:layout_alignParentRight="true"
+            android:text="@string/stop_automode" />
+
     </RelativeLayout>
 
 </FrameLayout>

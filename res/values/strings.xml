@@ -4,7 +4,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_piepsen_droid">piepsendroid</string>
     <string name="about">piepsendroid by android@i3games.com</string>
-    <string name="version">version 0.1</string>
+    <string name="version">version 0.2</string>
     <string name="menu_about">About</string>
     <string name="menu_settings">Settings</string>
     
@@ -36,5 +36,16 @@
     <string name="prefs_audio_amplitude_max_default">100</string>
     <string name="prefs_audio_amplitude_max">Maximum Amplitude</string>
     <string name="prefs_audio_amplitude_max_summary">The maximum amplitude we listen to.</string>
+    <string name="prefs_automode">Automode</string>
+    <string name="prefs_automode_startinautomode_summary">Should the app be listening and pieping on startup.</string>
+    <string name="prefs_automode_startinautomode">Start in Auto Mode</string>
+    <string name="prefs_automode_mindelay_default">3000</string>
+    <string name="prefs_automode_mindelay_summary">The minimum delay before pieping in ms.</string>
+    <string name="prefs_automode_mindelay">Minimum Delay</string>
+    <string name="prefs_automode_maxadd_default">5000</string>
+    <string name="prefs_automode_maxadd_summary">The maximum delay summand before pieping in ms.</string>
+    <string name="prefs_automode_maxadd">Maximium Addition</string>
+    <string name="start_automode">Start auto</string>
+    <string name="stop_automode">Stop auto</string>
 
 </resources>

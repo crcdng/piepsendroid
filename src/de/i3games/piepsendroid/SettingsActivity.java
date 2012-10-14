@@ -12,6 +12,9 @@ public class SettingsActivity extends PreferenceActivity {
 	public static final String PREFS_AUDIO_FREQUENCY_MAX = "prefs_audio_frequency_max";
 	public static final String PREFS_AUDIO_AMPLITUDE_MIN = "prefs_audio_amplitude_min";
 	public static final String PREFS_AUDIO_AMPLITUDE_MAX = "prefs_audio_amplitude_max";
+	public static final String PREFS_AUTOMODE_START = "prefs_automode_startinautomode";
+	public static final String PREFS_AUTOMODE_MINDELAY = "prefs_automode_mindelay";
+	public static final String PREFS_AUTOMODE_MAXADD = "prefs_automode_maxadd";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
