@@ -1,5 +1,14 @@
 <resources>
-
-    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar" />
-
+    <style name="AppTheme" parent="android:Theme.Holo.Light">
+            <item name="android:soundEffectsEnabled">false</item>  <!-- amazing what you can do with styles ;) -->    	
+            <item name="android:windowActionBar">true</item> 
+             
+    </style>
+    
+    <style name="CodeFont" parent="@android:style/TextAppearance.Medium">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#007B00</item>
+        <item name="android:typeface">monospace</item>
+    </style>
 </resources>

@@ -4,7 +4,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_piepsen_droid">piepsendroid</string>
     <string name="about">piepsendroid by android@i3games.com</string>
-    <string name="version">version 0.2</string>
+    <string name="version">version 0.2.1</string>
     <string name="menu_about">About</string>
     <string name="menu_settings">Settings</string>
     
